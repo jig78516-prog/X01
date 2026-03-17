@@ -80,10 +80,9 @@
       color: var(--accent-gold);
       text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
       margin: 20px 0;
-      animation: countInput 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+      animation: countInput 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
-    /* 「当選」表示用の少し小ぶりなサイズ調整 */
     .count-text {
       font-size: 80px;
     }
@@ -95,11 +94,11 @@
 
     #result-screen {
       display: none;
-      animation: fadeIn 0.6s ease-out forwards;
+      animation: fadeIn 0.8s ease-out forwards;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
+      from { opacity: 0; transform: translateY(15px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -234,31 +233,32 @@
       const countdownScreen = document.getElementById('countdown-screen');
       const resultScreen = document.getElementById('result-screen');
       
-      // 最後の文字を「当選」に変更
       const sequence = ["3", "2", "1", "当選"];
       let index = 0;
 
+      // 間隔を0.4秒から0.8秒（800ms）に変更しました
       const timer = setInterval(() => {
         index++;
         if (index < sequence.length) {
           countEl.style.animation = 'none';
           countEl.offsetHeight; 
 
-          // 文字が「当選」の場合は少しフォントサイズを調整するクラスを付与
           if (sequence[index] === "当選") {
             countEl.classList.add('count-text');
           }
 
           countEl.textContent = sequence[index];
-          countEl.style.animation = 'countInput 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+          // アニメーション時間も少しだけ伸ばして、ゆったり感を出しています
+          countEl.style.animation = 'countInput 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
         } else {
           clearInterval(timer);
+          // 最後の「当選」表示後に一呼吸置く
           setTimeout(() => {
             countdownScreen.style.display = 'none';
             resultScreen.style.display = 'block';
-          }, 400);
+          }, 600);
         }
-      }, 400); 
+      }, 800); 
     });
   </script>
 </body>
