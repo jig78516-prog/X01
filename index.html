@@ -3,291 +3,275 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>抽選結果</title>
+  <title>【公式】特典受領センター</title>
   <meta name="robots" content="noindex,nofollow" />
 
   <style>
-    :root{
-      --bg0:#050814;
-      --bg1:#071021;
-      --card: rgba(20, 28, 45, .72);
-      --stroke: rgba(255,255,255,.08);
-      --text:#ffffff;
-      --muted: rgba(255,255,255,.72);
-      --muted2: rgba(255,255,255,.55);
-
-      --blue1:#5a9bff;
-      --blue2:#3f7ef6;
-
-      --green1:#39e26b;
-      --green2:#1fc25a;
-
-      --glowG: rgba(57, 226, 107, .28);
-      --gold: rgba(255, 210, 70, .9);
+    :root {
+      /* 公式感のあるプレミアムカラーパレット */
+      --primary-dark: #0a1128;
+      --accent-gold: #d4af37;
+      --gold-gradient: linear-gradient(135deg, #f9d976 0%, #d4af37 100%);
+      --line-green: #06c755;
+      --text-white: #ffffff;
+      --text-muted: rgba(255, 255, 255, 0.7);
+      --glass: rgba(255, 255, 255, 0.05);
+      --stroke: rgba(255, 255, 255, 0.1);
     }
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-
-    body{
-      margin:0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
-      color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 50% 20%, rgba(30,60,130,.35), transparent 60%),
-        radial-gradient(900px 600px at 35% 80%, rgba(0,180,120,.12), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow:hidden;
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      background-color: var(--primary-dark);
+      background-image: 
+        radial-gradient(circle at 50% -20%, #1a2a44 0%, transparent 70%),
+        radial-gradient(circle at 0% 100%, #0d1b2a 0%, transparent 50%);
+      font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+      color: var(--text-white);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
     }
 
-    .dots{
-      position:fixed; inset:0;
-      pointer-events:none;
-      overflow:hidden;
-      filter: drop-shadow(0 0 10px rgba(255,210,70,.12));
-      opacity:.9;
-    }
-    .dot{
-      position:absolute;
-      width:6px; height:6px;
-      border-radius:999px;
-      background: var(--gold);
-      opacity:.75;
-      animation: floatUp linear infinite;
-    }
-    @keyframes floatUp{
-      from{ transform: translate3d(0, 120vh, 0); }
-      to{ transform: translate3d(0, -30vh, 0); }
+    /* 背景の輝き演出 */
+    .bg-animation {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
     }
 
-    .stage{
-      position:fixed; inset:0;
-      display:grid;
-      place-items:center;
-      padding: 22px 14px;
+    /* メインカード */
+    .container {
+      position: relative;
+      z-index: 10;
+      width: min(480px, 92vw);
+      padding: 40px 24px;
+      background: rgba(16, 24, 48, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--stroke);
+      border-radius: 24px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      text-align: center;
     }
 
-    .card{
-      width:min(560px, 92vw);
-      border-radius:26px;
-      background: linear-gradient(180deg, rgba(22,30,48,.74), rgba(12,18,34,.78));
-      border:1px solid var(--stroke);
-      box-shadow:
-        0 20px 60px rgba(0,0,0,.55),
-        0 0 0 1px rgba(255,255,255,.03) inset;
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      padding: 28px 22px 22px;
-      position:relative;
-    }
-
-    .title{
-      font-weight:800;
-      font-size: clamp(22px, 4.6vw, 34px);
-      letter-spacing:.02em;
-      text-align:center;
-      margin: 6px 0 12px;
-    }
-
-    .desc{
-      text-align:center;
-      color:var(--muted);
-      line-height:1.8;
-      font-size: 16px;
-      margin: 0 0 18px;
-      white-space:pre-line;
-    }
-
-    .countWrap{
-      display:grid;
-      place-items:center;
-      margin: 4px 0 18px;
-      min-height: 94px;
-    }
-    .count{
-      font-weight:900;
-      font-size: 72px;
-      color: rgba(255, 210, 70, .92);
-      text-shadow: 0 0 28px rgba(255,210,70,.18);
-      transform: translateZ(0);
-      animation: pop .35s ease;
-    }
-    @keyframes pop{
-      from{ transform: scale(.92); opacity:.2; }
-      to{ transform: scale(1); opacity:1; }
-    }
-
-    .btn{
-      width: min(420px, 100%);
-      display:block;
-      margin: 0 auto;
-      border:none;
-      border-radius: 20px;
-      padding: 18px 16px;
-      font-size: 20px;
-      font-weight: 800;
-      color:#fff;
-      cursor:pointer;
-      transition: transform .08s ease, filter .12s ease;
-      box-shadow: 0 14px 34px rgba(0,0,0,.35);
-      user-select:none;
-      -webkit-tap-highlight-color: transparent;
-    }
-    .btn:active{ transform: translateY(1px) scale(.99); }
-
-    .btnBlue{
-      background: linear-gradient(180deg, var(--blue1), var(--blue2));
-      box-shadow:
-        0 16px 42px rgba(70, 140, 255, .18),
-        0 14px 34px rgba(0,0,0,.35);
-    }
-
-    .btnGreen{
-      background: linear-gradient(180deg, var(--green1), var(--green2));
-      box-shadow:
-        0 16px 42px rgba(57, 226, 107, .16),
-        0 14px 34px rgba(0,0,0,.35);
-      color:#0a1b0f;
-    }
-
-    .btnSub{
-      display:block;
-      margin-top:6px;
-      font-weight:700;
-      opacity:.8;
-      font-size: 14px;
-    }
-
-    .fade{
-      animation: fadeIn .28s ease both;
-    }
-    @keyframes fadeIn{
-      from{ opacity:0; transform: translateY(10px) scale(.99); }
-      to{ opacity:1; transform: translateY(0) scale(1); }
-    }
-
-    .pill{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      margin: 10px auto 14px;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.06);
-      color: rgba(255,255,255,.92);
-      font-weight:800;
-      letter-spacing:.04em;
-    }
-
-    .money{
-      text-align:center;
+    /* ヘッダー装飾 */
+    .official-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: var(--gold-gradient);
+      color: #333;
+      font-size: 11px;
       font-weight: 900;
-      font-size: clamp(44px, 10vw, 68px);
-      color: rgba(57, 226, 107, .95);
-      text-shadow: 0 0 36px var(--glowG);
-      margin: 0 0 14px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      letter-spacing: 0.1em;
     }
 
-    .note{
-      text-align:center;
-      color: var(--muted2);
-      line-height:1.8;
-      margin: 8px 0 18px;
-      white-space:pre-line;
-      font-size: 16px;
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: 0.05em;
     }
 
-    .foot{
-      text-align:center;
-      color: rgba(255,255,255,.45);
+    /* カウントダウン表示 */
+    #countdown-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .count-number {
+      font-size: 100px;
+      font-weight: 900;
+      color: var(--accent-gold);
+      text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+      margin: 20px 0;
+      animation: countInput 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes countInput {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* 結果画面 */
+    #result-screen {
+      display: none;
+      animation: fadeIn 0.6s ease-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .win-announce {
+      color: var(--accent-gold);
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .pill {
+      background: var(--glass);
+      border: 1px solid var(--stroke);
+      padding: 6px 16px;
+      border-radius: 100px;
       font-size: 14px;
-      line-height:1.7;
-      margin-top: 14px;
+      display: inline-block;
+      margin-bottom: 15px;
+    }
+
+    .money-amount {
+      font-size: 56px;
+      font-weight: 900;
+      background: linear-gradient(to bottom, #fff, #bbb);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 10px 0 25px;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.2));
+    }
+
+    .instruction {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      margin-bottom: 30px;
+    }
+
+    /* 最重要：LINEボタンのアニメーション */
+    .line-button {
+      position: relative;
+      display: block;
+      width: 100%;
+      background: var(--line-green);
+      color: white;
+      text-decoration: none;
+      padding: 20px;
+      border-radius: 16px;
+      font-size: 19px;
+      font-weight: 800;
+      box-shadow: 0 10px 20px rgba(6, 199, 85, 0.3);
+      transition: all 0.2s;
+      overflow: hidden;
+      /* 常に動いているパルス効果 */
+      animation: pulse-green 2s infinite;
+    }
+
+    .line-button::before {
+      /* 光り輝くエフェクト（シマー） */
+      content: "";
+      position: absolute;
+      top: -100%;
+      left: -100%;
+      width: 300%;
+      height: 300%;
+      background: linear-gradient(
+        45deg,
+        rgba(255,255,255,0) 45%,
+        rgba(255,255,255,0.6) 50%,
+        rgba(255,255,255,0) 55%
+      );
+      animation: shimmer 2.5s infinite;
+    }
+
+    .sub-text {
+      display: block;
+      font-size: 12px;
+      margin-top: 4px;
+      opacity: 0.9;
+      font-weight: 400;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translate(-30%, -30%); }
+      100% { transform: translate(30%, 30%); }
+    }
+
+    @keyframes pulse-green {
+      0% { transform: scale(1); box-shadow: 0 10px 20px rgba(6, 199, 85, 0.3); }
+      50% { transform: scale(1.03); box-shadow: 0 15px 30px rgba(6, 199, 85, 0.5); }
+      100% { transform: scale(1); box-shadow: 0 10px 20px rgba(6, 199, 85, 0.3); }
+    }
+
+    /* フッター */
+    .footer-note {
+      margin-top: 25px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
     }
   </style>
 </head>
-
 <body>
 
-<div class="dots" id="dots"></div>
+  <div class="bg-animation"></div>
 
-<div class="stage">
+  <main class="container">
+    <div class="official-badge">OFFICIAL NOTICE</div>
+    
+    <!-- カウントダウンスクリーン（自動開始） -->
+    <div id="countdown-screen">
+      <h1 class="title">エントリー情報を照合中...</h1>
+      <div class="count-number" id="digital-count">3</div>
+    </div>
 
-<section class="card fade" id="screenStart">
-<h1 class="title">抽選結果の発表</h1>
-<p class="desc">エントリー情報を確認しました。<br>結果を表示します。</p>
+    <!-- 結果表示スクリーン -->
+    <div id="result-screen">
+      <p class="win-announce">🎉 当選おめでとうございます</p>
+      <div class="pill">20歳以上限定特典</div>
+      <div class="money-amount" id="prize-amount">350,000円</div>
+      <p class="instruction">
+        ご当選おめでとうございます。<br>
+        本日の特典受け取り期限が迫っています。<br>
+        下記より公式LINEを追加して申請してください。
+      </p>
 
-<div class="countWrap">
-<div class="count" id="count">3</div>
-</div>
+      <a href="https://lin.ee/IlgMpu0" class="line-button">
+        今すぐ特典を受け取る
+        <span class="sub-text">（公式LINE追加画面が開きます）</span>
+      </a>
 
-<button class="btn btnBlue" id="btnStart">結果を見る</button>
-</section>
+      <div class="footer-note">
+        ※本通知はシステムの厳正な抽選により配信されています。<br>
+        一定時間を過ぎますと権利が失効する場合がございます。
+      </div>
+    </div>
+  </main>
 
-<section class="card" id="screenResult" style="display:none;">
-<h2 class="title">🎉 当選おめでとうございます 🎉</h2>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const countEl = document.getElementById('digital-count');
+      const countdownScreen = document.getElementById('countdown-screen');
+      const resultScreen = document.getElementById('result-screen');
+      
+      const sequence = ["3", "2", "1", "確定"];
+      let index = 0;
 
-<div style="text-align:center;">
-<div class="pill" id="ageLimit">【20歳以上限定】</div>
-</div>
-
-<div class="money" id="money">350,000円</div>
-
-<p class="note">お受け取りには公式LINEの追加が必要です。<br>下のボタンからお手続きください。</p>
-
-<button class="btn btnGreen" id="btnLine">
-ここから受け取り
-<span class="btnSub">（公式LINEへ移動します。）</span>
-</button>
-
-<div class="foot">※一定時間を過ぎると受け取り権利は無効になる場合があります。</div>
-</section>
-
-</div>
-
-<script>
-
-const LINE_URL = "https://lin.ee/IlgMpu0";
-
-const PRIZE_TEXT = "350,000円";
-const AGE_LIMIT_TEXT = "【20歳以上限定】";
-
-const btnStart = document.getElementById('btnStart');
-const btnLine = document.getElementById('btnLine');
-const countEl = document.getElementById('count');
-
-const screenStart = document.getElementById('screenStart');
-const screenResult = document.getElementById('screenResult');
-
-function showResult(){
-screenStart.style.display='none';
-screenResult.style.display='block';
-}
-
-btnStart.addEventListener('click',()=>{
-let seq=["3","2","1","🎉"];
-let i=0;
-
-countEl.textContent=seq[i];
-
-let t=setInterval(()=>{
-i++;
-if(i>=seq.length){
-clearInterval(t);
-setTimeout(showResult,600);
-return;
-}
-countEl.textContent=seq[i];
-},900);
-
-});
-
-btnLine.addEventListener('click',()=>{
-window.location.href=LINE_URL;
-});
-
-</script>
-
+      // カウントダウン処理（300ms間隔でスピーディーに）
+      const timer = setInterval(() => {
+        index++;
+        if (index < sequence.length) {
+          // 数字を更新する際にアニメーションを再トリガー
+          countEl.style.animation = 'none';
+          countEl.offsetHeight; // reflow
+          countEl.textContent = sequence[index];
+          countEl.style.animation = 'countInput 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
+        } else {
+          clearInterval(timer);
+          // 最後の「確定」から結果表示まで少しだけ貯めを作る
+          setTimeout(() => {
+            countdownScreen.style.display = 'none';
+            resultScreen.style.display = 'block';
+          }, 400);
+        }
+      }, 400); // 0.4秒ごとにカウントが変わります
+    });
+  </script>
 </body>
 </html>
