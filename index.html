@@ -8,7 +8,6 @@
 
   <style>
     :root {
-      /* 公式感のあるプレミアムカラーパレット */
       --primary-dark: #0a1128;
       --accent-gold: #d4af37;
       --gold-gradient: linear-gradient(135deg, #f9d976 0%, #d4af37 100%);
@@ -35,15 +34,6 @@
       overflow: hidden;
     }
 
-    /* 背景の輝き演出 */
-    .bg-animation {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* メインカード */
     .container {
       position: relative;
       z-index: 10;
@@ -58,7 +48,6 @@
       text-align: center;
     }
 
-    /* ヘッダー装飾 */
     .official-badge {
       display: inline-block;
       padding: 4px 12px;
@@ -78,7 +67,6 @@
       letter-spacing: 0.05em;
     }
 
-    /* カウントダウン表示 */
     #countdown-screen {
       display: flex;
       flex-direction: column;
@@ -95,12 +83,16 @@
       animation: countInput 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
 
+    /* 「当選」表示用の少し小ぶりなサイズ調整 */
+    .count-text {
+      font-size: 80px;
+    }
+
     @keyframes countInput {
       from { transform: scale(0.5); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
-    /* 結果画面 */
     #result-screen {
       display: none;
       animation: fadeIn 0.6s ease-out forwards;
@@ -145,7 +137,6 @@
       margin-bottom: 30px;
     }
 
-    /* 最重要：LINEボタンのアニメーション */
     .line-button {
       position: relative;
       display: block;
@@ -160,12 +151,10 @@
       box-shadow: 0 10px 20px rgba(6, 199, 85, 0.3);
       transition: all 0.2s;
       overflow: hidden;
-      /* 常に動いているパルス効果 */
       animation: pulse-green 2s infinite;
     }
 
     .line-button::before {
-      /* 光り輝くエフェクト（シマー） */
       content: "";
       position: absolute;
       top: -100%;
@@ -200,7 +189,6 @@
       100% { transform: scale(1); box-shadow: 0 10px 20px rgba(6, 199, 85, 0.3); }
     }
 
-    /* フッター */
     .footer-note {
       margin-top: 25px;
       font-size: 12px;
@@ -210,18 +198,14 @@
 </head>
 <body>
 
-  <div class="bg-animation"></div>
-
   <main class="container">
     <div class="official-badge">OFFICIAL NOTICE</div>
     
-    <!-- カウントダウンスクリーン（自動開始） -->
     <div id="countdown-screen">
       <h1 class="title">エントリー情報を照合中...</h1>
       <div class="count-number" id="digital-count">3</div>
     </div>
 
-    <!-- 結果表示スクリーン -->
     <div id="result-screen">
       <p class="win-announce">🎉 当選おめでとうございます</p>
       <div class="pill">20歳以上限定特典</div>
@@ -250,27 +234,31 @@
       const countdownScreen = document.getElementById('countdown-screen');
       const resultScreen = document.getElementById('result-screen');
       
-      const sequence = ["3", "2", "1", "確定"];
+      // 最後の文字を「当選」に変更
+      const sequence = ["3", "2", "1", "当選"];
       let index = 0;
 
-      // カウントダウン処理（300ms間隔でスピーディーに）
       const timer = setInterval(() => {
         index++;
         if (index < sequence.length) {
-          // 数字を更新する際にアニメーションを再トリガー
           countEl.style.animation = 'none';
-          countEl.offsetHeight; // reflow
+          countEl.offsetHeight; 
+
+          // 文字が「当選」の場合は少しフォントサイズを調整するクラスを付与
+          if (sequence[index] === "当選") {
+            countEl.classList.add('count-text');
+          }
+
           countEl.textContent = sequence[index];
           countEl.style.animation = 'countInput 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards';
         } else {
           clearInterval(timer);
-          // 最後の「確定」から結果表示まで少しだけ貯めを作る
           setTimeout(() => {
             countdownScreen.style.display = 'none';
             resultScreen.style.display = 'block';
           }, 400);
         }
-      }, 400); // 0.4秒ごとにカウントが変わります
+      }, 400); 
     });
   </script>
 </body>
